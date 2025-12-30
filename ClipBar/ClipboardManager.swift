@@ -1,0 +1,155 @@
+import Cocoa
+
+class ClipboardManager {
+
+    private let historyKey = "clipbar.history"
+    private let pinnedKey  = "clipbar.pinned"
+
+    private var changeCount = NSPasteboard.general.changeCount
+
+    private(set) var history: [ClipboardItem] = []
+    private(set) var pinned: [ClipboardItem] = []
+
+    var maxHistory = 20
+    var isPaused = false
+
+    var onChange: (() -> Void)?
+
+    init() {
+        history = load(key: historyKey)
+        pinned  = load(key: pinnedKey)
+    }
+
+    // MARK: - Persistence
+
+    private func save() {
+        save(history, key: historyKey)
+        save(pinned, key: pinnedKey)
+    }
+
+    private func save(_ items: [ClipboardItem], key: String) {
+        let data = try? JSONEncoder().encode(items)
+        UserDefaults.standard.set(data, forKey: key)
+    }
+
+    private func load(key: String) -> [ClipboardItem] {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let items = try? JSONDecoder().decode([ClipboardItem].self, from: data)
+        else { return [] }
+        return items
+    }
+
+    // MARK: - Start watching
+
+    func start() {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            self?.checkClipboard()
+        }
+    }
+
+    // MARK: - Clipboard detection
+
+    private func checkClipboard() {
+        guard !isPaused else { return }
+
+        let pb = NSPasteboard.general
+        if pb.changeCount == changeCount { return }
+        changeCount = pb.changeCount
+
+        // TEXT
+        if let text = pb.string(forType: .string), !text.isEmpty {
+            add(.text, value: text, preview: text)
+            return
+        }
+
+        // URL
+        if let url = NSURL(from: pb) as URL? {
+            add(.url, value: url.absoluteString, preview: url.absoluteString)
+            return
+        }
+
+        // FILE
+        if let files = pb.readObjects(forClasses: [NSURL.self]) as? [URL],
+           let file = files.first {
+            add(.file, value: file.path, preview: file.lastPathComponent)
+            return
+        }
+
+        // IMAGE
+        if let image = NSImage(pasteboard: pb),
+           let data = image.tiffRepresentation {
+            let b64 = data.base64EncodedString()
+            add(.image, value: b64, preview: "🖼 Image")
+            return
+        }
+
+        // RTF
+        if let rtf = pb.data(forType: .rtf),
+           let str = String(data: rtf, encoding: .utf8) {
+            add(.rtf, value: str, preview: "📝 Rich Text")
+            return
+        }
+    }
+
+    private func add(_ type: ClipboardItemType, value: String, preview: String) {
+        if history.first?.value == value { return }
+
+        let item = ClipboardItem(
+            type: type,
+            value: value,
+            preview: preview.count > 40 ? String(preview.prefix(40)) + "…" : preview
+        )
+
+        history.insert(item, at: 0)
+        history = Array(history.prefix(maxHistory))
+        save()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+            self?.onChange?()
+        }
+    }
+
+    // MARK: - Actions
+
+    func clear() {
+        history.removeAll()
+        save()
+        onChange?()
+    }
+
+    func pin(_ item: ClipboardItem) {
+        if !pinned.contains(item) {
+            pinned.insert(item, at: 0)
+            save()
+            onChange?()
+        }
+    }
+
+    func unpin(_ item: ClipboardItem) {
+        pinned.removeAll { $0.id == item.id }
+        save()
+        onChange?()
+    }
+
+    // MARK: - Paste back
+
+    func paste(_ item: ClipboardItem) {
+        let pb = NSPasteboard.general
+        pb.clearContents()
+
+        switch item.type {
+        case .text, .rtf, .url:
+            pb.setString(item.value, forType: .string)
+
+        case .file:
+            let url = URL(fileURLWithPath: item.value)
+            pb.writeObjects([url as NSURL])
+
+        case .image:
+            if let data = Data(base64Encoded: item.value),
+               let image = NSImage(data: data) {
+                pb.writeObjects([image])
+            }
+        }
+    }
+}
