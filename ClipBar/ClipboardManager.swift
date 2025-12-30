@@ -153,3 +153,29 @@ class ClipboardManager {
         }
     }
 }
+import QuickLook
+
+extension ClipboardItem {
+
+    var quickLookURL: URL {
+        switch type {
+        case .file:
+            return URL(fileURLWithPath: value)
+
+        case .image:
+            return writeTempFile(data: Data(base64Encoded: value), ext: "png")
+
+        case .text, .rtf, .url:
+            return writeTempFile(data: value.data(using: .utf8), ext: "txt")
+        }
+    }
+
+    private func writeTempFile(data: Data?, ext: String) -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension(ext)
+
+        try? data?.write(to: url)
+        return url
+    }
+}
