@@ -58,20 +58,14 @@ class ClipboardManager {
 
         // TEXT
         if let text = pb.string(forType: .string), !text.isEmpty {
-            add(.text, value: text, preview: text)
-            return
-        }
-
-        // URL
-        if let url = NSURL(from: pb) as URL? {
-            add(.url, value: url.absoluteString, preview: url.absoluteString)
+            add(.text, value: text)
             return
         }
 
         // FILE
         if let files = pb.readObjects(forClasses: [NSURL.self]) as? [URL],
            let file = files.first {
-            add(.file, value: file.path, preview: file.lastPathComponent)
+            add(.file, value: file.path)
             return
         }
 
@@ -79,26 +73,15 @@ class ClipboardManager {
         if let image = NSImage(pasteboard: pb),
            let data = image.tiffRepresentation {
             let b64 = data.base64EncodedString()
-            add(.image, value: b64, preview: "🖼 Image")
-            return
-        }
-
-        // RTF
-        if let rtf = pb.data(forType: .rtf),
-           let str = String(data: rtf, encoding: .utf8) {
-            add(.rtf, value: str, preview: "📝 Rich Text")
+            add(.image, value: b64)
             return
         }
     }
 
-    private func add(_ type: ClipboardItemType, value: String, preview: String) {
+    private func add(_ type: ClipboardItemType, value: String) {
         if history.first?.value == value { return }
 
-        let item = ClipboardItem(
-            type: type,
-            value: value,
-            preview: preview.count > 40 ? String(preview.prefix(40)) + "…" : preview
-        )
+        let item = ClipboardItem(type: type, value: value)
 
         history.insert(item, at: 0)
         history = Array(history.prefix(maxHistory))
@@ -138,7 +121,7 @@ class ClipboardManager {
         pb.clearContents()
 
         switch item.type {
-        case .text, .rtf, .url:
+        case .text:
             pb.setString(item.value, forType: .string)
 
         case .file:
@@ -153,29 +136,4 @@ class ClipboardManager {
         }
     }
 }
-import QuickLook
 
-extension ClipboardItem {
-
-    var quickLookURL: URL {
-        switch type {
-        case .file:
-            return URL(fileURLWithPath: value)
-
-        case .image:
-            return writeTempFile(data: Data(base64Encoded: value), ext: "png")
-
-        case .text, .rtf, .url:
-            return writeTempFile(data: value.data(using: .utf8), ext: "txt")
-        }
-    }
-
-    private func writeTempFile(data: Data?, ext: String) -> URL {
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension(ext)
-
-        try? data?.write(to: url)
-        return url
-    }
-}
