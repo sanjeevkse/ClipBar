@@ -1,0 +1,50 @@
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Swift
+.build/
+.swiftpm/
+*.xcframework
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*~.nib
+
+# IDE
+.idea/
+.vscode/
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+
+# App archive
+*.ipa
+*.app
+
+# User-specific files
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+
+# CocoaPods (if used)
+Pods/
+Podfile.lock
+
+# Package manager
+.swiftpm/
+
+# Misc
+*.orig
+*.temp

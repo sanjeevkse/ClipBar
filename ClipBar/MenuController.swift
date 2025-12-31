@@ -6,18 +6,26 @@ final class MenuController {
     private let clipboard: ClipboardManager
     private let loginItem: LoginItemManager
     private let quickLook: QuickLookController
+    private let updateChecker: UpdateChecker
 
     init(
         clipboard: ClipboardManager,
         loginItem: LoginItemManager,
-        quickLook: QuickLookController
+        quickLook: QuickLookController,
+        updateChecker: UpdateChecker
     ) {
         self.clipboard = clipboard
         self.loginItem = loginItem
         self.quickLook = quickLook
+        self.updateChecker = updateChecker
 
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         self.statusItem.button?.title = "📋"
+        
+        // Listen for update status changes
+        updateChecker.onUpdateStatusChanged = { [weak self] in
+            self?.rebuildMenu()
+        }
     }
 
     // MARK: - Menu rebuild
@@ -102,6 +110,24 @@ final class MenuController {
 
         menu.addItem(NSMenuItem.separator())
 
+        // ⬆️ Check for Updates
+        let updateTitle: String
+        if let (version, _) = updateChecker.updateAvailable {
+            updateTitle = "⬆️ Update Available (v\(version))"
+        } else {
+            updateTitle = "⬆️ Check for Updates…"
+        }
+        
+        let updateItem = NSMenuItem(
+            title: updateTitle,
+            action: #selector(checkForUpdates),
+            keyEquivalent: ""
+        )
+        updateItem.target = self
+        menu.addItem(updateItem)
+
+        menu.addItem(NSMenuItem.separator())
+
         // ⏸ Pause / Resume
         let pauseItem = NSMenuItem(
             title: clipboard.isPaused ? "▶ Resume Clipboard" : "⏸ Pause Clipboard",
@@ -178,6 +204,16 @@ final class MenuController {
     @objc private func clearHistory() {
         clipboard.clear()
         rebuildMenu()
+    }
+
+    @objc private func checkForUpdates() {
+        // Force a fresh check when user clicks
+        updateChecker.checkForUpdates(force: true)
+        
+        // If update is available, open the release page
+        if let (_, url) = updateChecker.updateAvailable {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     @objc private func quit() {
