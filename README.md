@@ -43,10 +43,14 @@ macOS will show a security warning on first launch. This is expected.
 
 ---
 
-### Option 2: Homebrew (Coming Soon)
+### Option 2: Homebrew (Developers)
 
-Homebrew support is planned but not yet available.
-For now, please use Prebuilt App or Build from Source.
+```bash
+brew tap sanjeevkse/clipbar
+brew install --cask clipbar
+```
+
+macOS may still show a security warning on first launch.
 
 ---
 
@@ -128,3 +132,7 @@ To get notified:
 ## License
 
 MIT License
+
+```
+
+```
