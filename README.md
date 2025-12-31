@@ -18,7 +18,23 @@ macOS 14 (Sonoma) and later.
 
 ## Installation
 
-### Build from Source
+Choose your preferred installation method:
+
+### 1. **Homebrew** (Easiest)
+
+```bash
+brew install clipbar
+```
+
+Then open ClipBar from **Applications** or Spotlight.
+
+### 2. **Direct Download** (Prebuilt App)
+
+1. Download the latest `ClipBar.app.zip` from [GitHub Releases](https://github.com/sanjeevkse/ClipBar/releases)
+2. Unzip and drag `ClipBar.app` to `/Applications`
+3. Open ClipBar from **Applications** or Spotlight
+
+### 3. **Build from Source**
 
 Clone the repository and open the project in Xcode:
 
@@ -33,13 +49,13 @@ Build and run:
 1. Select **Product > Run** (or press `Cmd+R`)
 2. Or build and archive for distribution: **Product > Archive**
 
-**System Requirements:**
+**Build Requirements:**
 
 - macOS 14+
 - Xcode 15+ (for building from source)
 - A free Apple ID (for code signing)
 
-## ⚠️ Important: Gatekeeper Warning
+## ⚠️ Important: First Launch (Gatekeeper)
 
 **This app is not notarized.** On your first launch, macOS may display a security warning:
 
@@ -49,16 +65,18 @@ Build and run:
 
 This is normal for unsigned, open-source applications. To proceed:
 
+**Option A: System Settings (Recommended)**
 1. Open **System Settings > Privacy & Security**
 2. Scroll down and find the message about ClipBar
 3. Click **Open Anyway**
 4. Confirm by clicking **Open** in the dialog
 
-Alternatively, you can allow in Terminal using:
-
+**Option B: Terminal**
 ```bash
 xattr -d com.apple.quarantine /Applications/ClipBar.app
 ```
+
+After the first launch, ClipBar will run normally without further warnings.
 
 ## Usage
 
