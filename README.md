@@ -26,17 +26,22 @@ macOS 14 (Sonoma) and later.
 
 ## Installation
 
-ClipBar is distributed outside the Mac App Store.
+ClipBar is distributed outside the Mac App Store.  
 Choose the installation method that best fits you.
 
 ---
 
-### Option 1: Prebuilt App (Easiest)
+### Option 1: Prebuilt App (Recommended)
 
-1. Download the latest ClipBar-1.0.1-unsigned.zip from:
-   https://github.com/sanjeevkse/ClipBar/releases
+Download the latest unsigned build:
+
+https://sanjeevkse.github.io/ClipBar/downloads/ClipBar-1.0.1-unsigned.zip
+
+Steps:
+
+1. Download the ZIP file
 2. Unzip the archive
-3. Drag ClipBar.app to the Applications folder
+3. Drag `ClipBar.app` to the Applications folder
 4. Open ClipBar from Applications or Spotlight
 
 macOS will show a security warning on first launch. This is expected.
@@ -56,8 +61,11 @@ macOS may still show a security warning on first launch.
 
 ### Option 3: Build from Source (Advanced)
 
-1. Download the source code from GitHub
-2. Open ClipBar.xcodeproj in Xcode
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/sanjeevkse/ClipBar.git
+   ```
+2. Open `ClipBar.xcodeproj` in Xcode
 3. Select your Mac as the run destination
 4. Click Run
 
@@ -66,9 +74,6 @@ Build Requirements:
 - macOS 14+
 - Xcode 15+
 - A free Apple ID (for code signing)
-
-Xcode is required only for the initial build.
-After the first run, ClipBar works like a normal macOS app.
 
 ---
 
@@ -79,8 +84,6 @@ ClipBar is not notarized by Apple.
 On first launch, macOS may show:
 "ClipBar" cannot be opened because the developer cannot be verified.
 
-This is normal for open-source apps distributed outside the App Store.
-
 System Settings method:
 
 1. Open System Settings → Privacy & Security
@@ -89,18 +92,10 @@ System Settings method:
 4. Confirm by clicking Open
 
 Terminal method (advanced):
+
+```bash
 xattr -d com.apple.quarantine /Applications/ClipBar.app
-
-If you are uncomfortable bypassing macOS security warnings, use the Build from Source option instead.
-
----
-
-## Usage
-
-- Copy as usual – ClipBar automatically records clipboard changes
-- View history – Click the menu bar icon
-- Paste an item – Click any item in the menu
-- Preview content – Use Quick Look
+```
 
 ---
 
@@ -108,9 +103,9 @@ If you are uncomfortable bypassing macOS security warnings, use the Build from S
 
 ClipBar does not auto-update.
 
-- On launch, ClipBar checks GitHub for a newer version (once every 24 hours)
+- On launch, ClipBar checks for a newer version (once every 24 hours)
 - If an update is available, the menu bar shows: Update Available (vX.Y.Z)
-- Click the menu item to open the GitHub release page
+- Click the menu item to open the download page
 - Download and install the new version manually
 
 To get notified:
@@ -132,7 +127,3 @@ To get notified:
 ## License
 
 MIT License
-
-```
-
-```
