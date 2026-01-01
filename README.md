@@ -4,6 +4,8 @@ A lightweight macOS menu bar clipboard manager that keeps your copy history acce
 
 ClipBar is designed for developers and power users who want a simple, local-first clipboard manager.
 
+![ClipBar Screenshot](Resources/v1.0.1.png)
+
 ---
 
 ## Features
