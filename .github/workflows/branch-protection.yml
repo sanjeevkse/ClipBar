@@ -1,0 +1,47 @@
+name: Branch Protection
+
+# This workflow enforces branch protection rules for the main branch
+# Only the repository owner (sanjeevkse) can push directly to main
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-push-permission:
+    # This job runs on direct pushes to main branch
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check if push is from repository owner
+        run: |
+          PUSHER="${{ github.actor }}"
+          OWNER="sanjeevkse"
+          
+          echo "Push attempt by: $PUSHER"
+          echo "Repository owner: $OWNER"
+          
+          if [ "$PUSHER" != "$OWNER" ]; then
+            echo "❌ ERROR: Only @$OWNER can push directly to the main branch."
+            echo "Please create a pull request instead."
+            exit 1
+          else
+            echo "✅ Push authorized: Repository owner"
+          fi
+
+  validate-pull-request:
+    # This job runs on pull requests to main branch
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: PR Information
+        run: |
+          echo "Pull request #${{ github.event.pull_request.number }} from ${{ github.actor }}"
+          echo "This PR requires approval from @sanjeevkse before merging."
+          echo "✅ Pull request workflow completed."

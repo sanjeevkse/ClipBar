@@ -1,0 +1,6 @@
+# CODEOWNERS file for ClipBar repository
+# This file defines who can approve changes to the repository
+# Only the repository owner can merge changes to the main branch
+
+# Global rule: all files require review from @sanjeevkse
+* @sanjeevkse
