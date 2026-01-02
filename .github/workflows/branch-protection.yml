@@ -17,51 +17,19 @@ on:
       - main
 
 jobs:
-  check-push-permission:
-    # This job runs on direct pushes to main branch
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    
-    steps:
-      - name: Check if push is from repository owner
-        run: |
-          PUSHER="${{ github.actor }}"
-          OWNER="${{ github.repository_owner }}"
-          
-          echo "Push attempt by: $PUSHER"
-          echo "Repository owner: $OWNER"
-          
-          if [ "$PUSHER" != "$OWNER" ]; then
-            echo "❌ ERROR: Only @$OWNER can push directly to the main branch."
-            echo "Please create a pull request instead."
-            exit 1
-          else
-            echo "✅ Push authorized: Repository owner"
-          fi
-
-  validate-pull-request:
-    # This job runs on pull requests to main branch
-    if: github.event_name == 'pull_request'
+  validate:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: read
     
     steps:
-      - name: Validate PR requirements
+      - name: Validate access
         run: |
-          echo "📋 Pull Request Validation"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "PR #${{ github.event.pull_request.number }}"
-          echo "Author: ${{ github.actor }}"
-          echo "Target: ${{ github.event.pull_request.base.ref }}"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo ""
-          echo "⚠️  Required before merge:"
-          echo "  • Approval from @${{ github.repository_owner }} (Code Owner)"
-          echo "  • All status checks must pass"
-          echo "  • No merge conflicts"
-          echo ""
-          echo "✅ Pull request validation completed."
+          if [ "${{ github.event_name }}" = "push" ]; then
+            [ "${{ github.actor }}" = "${{ github.repository_owner }}" ] || {
+              echo "❌ Only @${{ github.repository_owner }} can push to main"
+              exit 1
+            }
+          fi
+          echo "✅ Validation passed"
