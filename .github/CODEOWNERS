@@ -2,5 +2,8 @@
 # This file defines who can approve changes to the repository
 # Only the repository owner can merge changes to the main branch
 
+# Note: This file uses a hardcoded username because GitHub's CODEOWNERS
+# does not support dynamic references. Update this file if repository ownership changes.
+
 # Global rule: all files require review from @sanjeevkse
 * @sanjeevkse

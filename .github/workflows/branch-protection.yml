@@ -2,6 +2,11 @@ name: Branch Protection
 
 # This workflow enforces branch protection rules for the main branch
 # Only the repository owner can push directly to main
+#
+# IMPORTANT: This workflow runs AFTER a push occurs, so it cannot prevent
+# unauthorized code from being pushed. It fails the workflow to alert the owner
+# and can be used as a required status check. For complete protection, configure
+# GitHub branch protection settings in Settings → Branches (see BRANCH_PROTECTION.md)
 
 on:
   push:
