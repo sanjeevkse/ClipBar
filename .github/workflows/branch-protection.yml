@@ -21,7 +21,7 @@ jobs:
       - name: Check if push is from repository owner
         run: |
           PUSHER="${{ github.actor }}"
-          OWNER="sanjeevkse"
+          OWNER="${{ github.repository_owner }}"
           
           echo "Push attempt by: $PUSHER"
           echo "Repository owner: $OWNER"
@@ -40,8 +40,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: PR Information
+      - name: Validate PR requirements
         run: |
-          echo "Pull request #${{ github.event.pull_request.number }} from ${{ github.actor }}"
-          echo "This PR requires approval from @sanjeevkse before merging."
-          echo "✅ Pull request workflow completed."
+          echo "📋 Pull Request Validation"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "PR #${{ github.event.pull_request.number }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Target: ${{ github.event.pull_request.base.ref }}"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "⚠️  Required before merge:"
+          echo "  • Approval from @${{ github.repository_owner }} (Code Owner)"
+          echo "  • All status checks must pass"
+          echo "  • No merge conflicts"
+          echo ""
+          echo "✅ Pull request validation completed."
