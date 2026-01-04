@@ -1,5 +1,10 @@
 # ClipBar
 
+[![Swift](https://img.shields.io/badge/Swift-5.9+-orange?logo=swift)](https://swift.org)
+[![macOS](https://img.shields.io/badge/macOS-14+-blue?logo=apple)](https://www.apple.com/macos/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/sanjeevkse/ClipBar)](https://github.com/sanjeevkse/ClipBar/releases)
+
 A lightweight macOS menu bar clipboard manager that keeps your copy history accessible and organized.
 
 ClipBar is designed for developers and power users who want a simple, local-first clipboard manager.
