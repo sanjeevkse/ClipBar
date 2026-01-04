@@ -124,6 +124,10 @@ class ClipboardManager {
     // MARK: - Paste back
 
     func paste(_ item: ClipboardItem) {
+        // Mark that we should ignore the next clipboard change
+        // to prevent re-adding this item to history
+        ignoreNextChange = true
+        
         let pb = NSPasteboard.general
         pb.clearContents()
 
@@ -141,10 +145,6 @@ class ClipboardManager {
                 pb.writeObjects([image])
             }
         }
-        
-        // Mark that we should ignore the next clipboard change
-        // to prevent re-adding this item to history
-        ignoreNextChange = true
     }
 }
 
