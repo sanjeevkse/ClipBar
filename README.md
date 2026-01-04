@@ -4,6 +4,9 @@
 [![macOS](https://img.shields.io/badge/macOS-14+-blue?logo=apple)](https://www.apple.com/macos/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Latest Release](https://img.shields.io/github/v/release/sanjeevkse/ClipBar)](https://github.com/sanjeevkse/ClipBar/releases)
+[![ZIP Downloads](https://img.shields.io/github/downloads/sanjeevkse/ClipBar/total?label=ZIP%20Downloads)](https://github.com/sanjeevkse/ClipBar/releases)
+[![Homebrew Downloads](https://img.shields.io/homebrew/installs/cask/clipbar?label=Homebrew%20Installs)](https://formulae.brew.sh/cask/clipbar)
+[![GitHub Stars](https://img.shields.io/github/stars/sanjeevkse/ClipBar?label=Stars)](https://github.com/sanjeevkse/ClipBar)
 
 A lightweight macOS menu bar clipboard manager that keeps your copy history accessible and organized.
 
@@ -42,7 +45,7 @@ Choose the installation method that best fits you.
 
 Download the latest unsigned build:
 
-https://sanjeevkse.github.io/ClipBar/downloads/ClipBar-1.0.1-unsigned.zip
+https://github.com/sanjeevkse/ClipBar/releases/latest
 
 Steps:
 
