@@ -6,6 +6,7 @@ class ClipboardManager {
     private let pinnedKey  = "clipbar.pinned"
 
     private var changeCount = NSPasteboard.general.changeCount
+    private var ignoreNextChange = false
 
     private(set) var history: [ClipboardItem] = []
     private(set) var pinned: [ClipboardItem] = []
@@ -55,6 +56,12 @@ class ClipboardManager {
         let pb = NSPasteboard.general
         if pb.changeCount == changeCount { return }
         changeCount = pb.changeCount
+        
+        // Skip this change if it was triggered by our own paste operation
+        if ignoreNextChange {
+            ignoreNextChange = false
+            return
+        }
 
         // TEXT
         if let text = pb.string(forType: .string), !text.isEmpty {
@@ -134,6 +141,10 @@ class ClipboardManager {
                 pb.writeObjects([image])
             }
         }
+        
+        // Mark that we should ignore the next clipboard change
+        // to prevent re-adding this item to history
+        ignoreNextChange = true
     }
 }
 
